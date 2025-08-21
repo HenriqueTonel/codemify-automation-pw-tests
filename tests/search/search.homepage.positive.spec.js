@@ -54,12 +54,17 @@ test.describe('Home Page Search Feature Positive Tests', () => {
     );
   });
 
-  test('Should search by bedrooms', async ({ adminAuthenticatedPage, createdListing }) => {
+  test('Should search by bedrooms', async ({
+    adminAuthenticatedPage,
+    createdListing,
+  }) => {
     const searchBedroomsNum = 2;
 
     await homePage.selectMinimumBedroomsSearchOption(searchBedroomsNum);
     await homePage.startSearchButton.click();
-    await adminAuthenticatedPage.waitForURL(`/**bedrooms=${searchBedroomsNum}**`);
+    await adminAuthenticatedPage.waitForURL(
+      `/**bedrooms=${searchBedroomsNum}**`
+    );
 
     await expect(
       listingsPage.estateObject.resultBedrooms.first()
@@ -125,7 +130,10 @@ test.describe('Home Page Search Feature Positive Tests', () => {
     expect(objectBathroomsNum).toBe(resultBathroomsNum);
   });
 
-  test('Should search by city', async ({ adminAuthenticatedPage, createdListing }) => {
+  test('Should search by city', async ({
+    adminAuthenticatedPage,
+    createdListing,
+  }) => {
     const city = createdListing.city;
     const cityURL = createdListing.city.replaceAll(' ', '+');
 
@@ -195,8 +203,11 @@ test.describe('Home Page Search Feature Positive Tests', () => {
   });
 
   test('Should search by price', async ({ adminAuthenticatedPage }) => {
-    const minValue = 300000;
-    const maxValue = 1000000;
+    let minValue = 200000;
+    let maxValue = 1000000;
+
+    minValue = Math.floor(minValue / 100000) * 100000;
+    maxValue = Math.ceil(maxValue / 100000) * 100000;
 
     await expect(homePage.animationElement.first()).toHaveCSS(
       'transform',
@@ -205,9 +216,13 @@ test.describe('Home Page Search Feature Positive Tests', () => {
     );
 
     await homePage.modifyPriceSearchRail(minValue, maxValue);
+    const searchedMaxValue = await homePage.getCurrentMaxPriceNumber();
+    const searchedMinValue = await homePage.getCurrentMinPriceNumber();
     await homePage.startSearchButton.click();
-    await adminAuthenticatedPage.waitForURL(`/**?price=${minValue}-${maxValue}**`);
 
+    await adminAuthenticatedPage.waitForURL(
+      `/**?price=${searchedMinValue}-${searchedMaxValue}**`
+    );
     await expect(listingsPage.estateObject.resultPrice.first()).toBeVisible();
 
     const resultPriceCount =
@@ -218,8 +233,8 @@ test.describe('Home Page Search Feature Positive Tests', () => {
         .innerText();
       let match = parseInt(textContent.replace(/[^0-9]/g, ''), 10);
 
-      expect(match).toBeGreaterThanOrEqual(minValue);
-      expect(match).toBeLessThanOrEqual(maxValue);
+      expect(match).toBeGreaterThanOrEqual(searchedMinValue);
+      expect(match).toBeLessThanOrEqual(searchedMaxValue);
     }
   });
 

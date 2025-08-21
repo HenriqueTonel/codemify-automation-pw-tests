@@ -19,7 +19,10 @@ export class ListingsPage {
       resultPrice: page
         .locator('div.MuiCard-root div.MuiBox-root div.MuiBox-root')
         .getByText('$'),
-      resultFavoritesBox: page.locator('div.MuiGrid-grid-sm-6').locator('svg[width="1em"]').first(),
+      resultFavoritesBox: page
+        .locator('div.MuiGrid-grid-sm-6')
+        .locator('svg[width="1em"]')
+        .first(),
       resultTitle: page.locator('h5.MuiTypography-h5'),
       resultSqft: page.locator('div.MuiGrid-grid-xs-6').getByText('Sqft: '),
       resultBedrooms: page
@@ -116,5 +119,18 @@ export class ListingsPage {
       await this.page.mouse.move(x + maxCoordinate, y);
       await this.page.mouse.up();
     }
+  }
+  async getCurrentMinPriceNumber() {
+    const minThumbCurrentValueString = await this.minThumb
+      .locator('input')
+      .getAttribute('aria-valuenow');
+    return Number(minThumbCurrentValueString);
+  }
+
+  async getCurrentMaxPriceNumber() {
+    const maxThumbCurrentValueString = await this.maxThumb
+      .locator('input')
+      .getAttribute('aria-valuenow');
+    return Number(maxThumbCurrentValueString);
   }
 }

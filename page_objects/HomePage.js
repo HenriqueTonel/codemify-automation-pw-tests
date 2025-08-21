@@ -14,13 +14,13 @@ export class HomePage {
     this.minThumb = page.locator('span[data-index="0"]');
     this.maxThumb = page.locator('span[data-index="1"]');
     this.priceRail = page.locator('span.MuiSlider-rail');
-    this.startSearchButton = page.locator('button').getByText("Start Search")
+    this.startSearchButton = page.locator('button').getByText('Start Search');
     this.darkModeSwitch = page.locator('input[type="checkbox"]');
   }
 
   /**
    * Fills the search box with the input keyword
-   * @param {string} str - Keyword that will fill the search box 
+   * @param {string} str - Keyword that will fill the search box
    */
   async fillKeywordSearchField(str) {
     await this.searchBox.fill(str);
@@ -39,7 +39,7 @@ export class HomePage {
 
   /**
    * Fills the city box with the input value
-   * @param {string} str - Desired name of the city to use in the search 
+   * @param {string} str - Desired name of the city to use in the search
    */
   async fillCitySearchField(str) {
     await this.cityBox.fill(str);
@@ -48,7 +48,7 @@ export class HomePage {
   /**
    * Will modify the price rail to suit the input values. Min must be less than max
    * @param {number} min - Desired minimum price to use in search
-   * @param {number} max - Desired maximum price to use in search 
+   * @param {number} max - Desired maximum price to use in search
    */
   async modifyPriceSearchRail(min, max) {
     const priceRailBox = await this.priceRail.boundingBox();
@@ -96,5 +96,18 @@ export class HomePage {
       await this.page.mouse.move(x + maxCoordinate, y);
       await this.page.mouse.up();
     }
+  }
+  async getCurrentMinPriceNumber() {
+    const minThumbCurrentValueString = await this.minThumb
+      .locator('input')
+      .getAttribute('aria-valuenow');
+    return Number(minThumbCurrentValueString);
+  }
+
+  async getCurrentMaxPriceNumber() {
+    const maxThumbCurrentValueString = await this.maxThumb
+      .locator('input')
+      .getAttribute('aria-valuenow');
+    return Number(maxThumbCurrentValueString);
   }
 }
