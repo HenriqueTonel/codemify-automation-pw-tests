@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../page_objects/LoginPage.js';
 import { HomePage } from '../../page_objects/HomePage.js';
 import { DashboardPage } from '../../page_objects/DashboardPage.js';
-import {apiLogin} from '../../api/UsersApi.js';
+import { apiLogin } from '../../api/UsersApi.js';
 
 test.describe('Login', () => {
   let loginPage, homePage, dashboardPage;
@@ -13,17 +13,17 @@ test.describe('Login', () => {
     homePage = new HomePage(page);
     dashboardPage = new DashboardPage(page);
   });
-  
+
   test('Should login with an existing Admin account', async ({
     page,
-    request
+    request,
   }, testInfo) => {
     const email = testInfo.project.use.env.adminEmail;
     const password = testInfo.project.use.env.adminPassword;
-    const displayName = testInfo.project.use.env.adminName;
     const displayRole = 'role: admin';
 
-    await apiLogin(page, request, email, password);
+    const loginResponseJson = await apiLogin(page, request, email, password);
+    const displayName = `${loginResponseJson.user.username} ${loginResponseJson.user.user_surname}`;
 
     await page.goto(testInfo.project.use.env.baseUrl);
 

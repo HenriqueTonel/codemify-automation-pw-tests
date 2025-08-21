@@ -22,6 +22,8 @@ async function apiLogin(page, apiClient, email, password) {
     (token) => localStorage.setItem('accessToken', token),
     apiLoginResponseJson.accessToken
   );
+
+  return apiLoginResponseJson;
 }
 
 /**
